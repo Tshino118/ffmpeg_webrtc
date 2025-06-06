@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    git \
+    yasm \
+    nasm \
+    libx264-dev \
+    libopus-dev \
+    libvpx-dev \
+    libsrtp2-dev \
+    libcurl4-openssl-dev \
+    libssl-dev
+
+RUN git clone --depth 1 https://git.ffmpeg.org/ffmpeg.git /ffmpeg_sources
+WORKDIR /ffmpeg_sources
+RUN ./configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libopus --enable-libvpx --enable-openssl
+RUN make -j$(nproc)
+RUN make install
+

@@ -1,0 +1,25 @@
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: mediamtx-server
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml
+    ports:
+      - "8888:8888"
+      - "8189:8189/udp"
+      - "8889:8889"
+
+  ffmpeg-streamer:
+    container_name: ffmpeg-streamer
+    build:
+      context: .
+      dockerfile: Dockerfile.ffmpeg
+    depends_on:
+      - mediamtx
+    devices:
+      - "/dev/video0:/dev/video0"
+    command: >
+      sh -c "
+        sleep 5;
+        ffmpeg -re -f v4l2 -i /dev/video0 -c:v libx264 -pix_fmt yuv420p -preset ultrafast -tune zerolatency -f whip http://mediamtx:8889/stream/whip
+      "

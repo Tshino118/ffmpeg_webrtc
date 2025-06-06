@@ -1,0 +1,11 @@
+logLevel: info
+# ログの出力先を標準出力（ターミナル）に設定
+logDestinations: [stdout]
+
+# WebRTCリスナーを有効化
+webrtc: true
+
+paths:
+  all_others:
+  stream:
+
